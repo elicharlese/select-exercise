@@ -3,19 +3,214 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #ffffff;
+  --background: #0B0C14;
+  --primary: #0CA6E9;
+  --primary-dark: #0085C0;
+  --card-bg: #0D0E17;
+  --card-border: #1C1D29;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    color: var(--foreground);
+    background: var(--background);
+    font-feature-settings: "ss01", "ss02", "cv01", "cv02";
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
   }
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+@layer components {
+  .container {
+    @apply max-w-[1272px] mx-auto px-4;
+  }
+
+  .btn-primary {
+    @apply px-6 py-3 bg-primary-blue text-white rounded-xl font-semibold shadow-primary-btn 
+    hover:bg-primary-blue/90 transition-colors;
+  }
+
+  .btn-secondary {
+    @apply px-6 py-3 border-2 border-[#0CA6E9] text-[#0CA6E9] rounded-xl font-semibold 
+    hover:bg-[#0CA6E9]/10 transition-colors;
+  }
+}
+
+@layer utilities {
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+/* Animations */
+@keyframes scroll-up {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-50%);
+  }
+}
+
+@keyframes scroll-down {
+  from {
+    transform: translateY(-50%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-border {
+  animation: border-animation 2s linear infinite;
+}
+
+/* Animation Classes */
+.animate-scroll-up {
+  animation: scroll-up 25s linear infinite;
+  will-change: transform;
+}
+
+.animate-scroll-down {
+  animation: scroll-down 25s linear infinite;
+  will-change: transform;
+}
+
+.animate-fade-in {
+  animation: fade-in 0.5s ease-out forwards;
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.5s ease-out forwards;
+}
+
+/* Selection Styles */
+::selection {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* For Firefox */
+::-moz-selection {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Mobile Optimizations */
+@media (max-width: 768px) {
+  .animate-scroll-up,
+  .animate-scroll-down {
+    animation-duration: 15s;
+  }
+}
+
+/* Add this to your global CSS or a specific CSS module */
+.bg-dark-bg {
+  background-color: rgba(0, 0, 0, 0.8); /* Adjust the color as needed */
+}
+
+.glow-effect {
+  --glow-line-color: #0CA6E9;
+  --glow-line-thickness: 2px;
+  --glow-line-length: 20px;
+  --glow-blur-color: #0CA6E9;
+  --glow-blur-size: 5px;
+  --glow-offset: 0px;
+  --animation-speed: 2400ms;
+  --container-offset: 100px;
+  position: relative;
+}
+
+.glow-container {
+  pointer-events: none;
+  position: absolute;
+  inset: calc(var(--container-offset) / -2);
+  width: calc(100% + var(--container-offset));
+  height: calc(100% + var(--container-offset));
+  opacity: 0;
+}
+
+.glow-blur,
+.glow-line {
+  width: calc(100% - var(--container-offset) + var(--glow-offset));
+  height: calc(100% - var(--container-offset) + var(--glow-offset));
+  fill: transparent;
+  stroke: var(--glow-line-color);
+  stroke-width: var(--glow-line-thickness);
+  stroke-dasharray: var(--glow-line-length) calc(50px - var(--glow-line-length));
+}
+
+.glow-effect:is(:hover, :focus) :is(.glow-line, .glow-blur) {
+  stroke-dashoffset: -80px;
+  transition: stroke-dashoffset var(--animation-speed) ease-in;
+}
+
+.glow-line {
+  stroke: var(--glow-line-color);
+  stroke-width: var(--glow-line-thickness);
+}
+
+.glow-blur {
+  filter: blur(var(--glow-blur-size));
+  stroke: var(--glow-blur-color);
+  stroke-width: var(--glow-blur-size);
+}
+
+.glow-effect:is(:hover, :focus) .glow-container {
+  animation: glow-visibility ease-in-out var(--animation-speed);
+}
+
+@keyframes glow-visibility {
+  0% {
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.glow-effect[data-glow-animation="false"] {
+  --glow-line-length: 50px;
+}
+.glow-effect[data-glow-offset="true"] {
+  --glow-offset: 10px;
+}
+
+.glow-effect[data-glow-animation="grow"]:is(:hover, :focus) .glow-container {
+  scale: 1.3;
+  transition: scale var(--animation-speed) linear;
 }
